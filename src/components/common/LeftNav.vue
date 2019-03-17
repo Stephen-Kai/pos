@@ -63,6 +63,7 @@
   .left-nav ul{
     padding: 0;
     margin: 0;
+    border-right: none;
   }
 
   .left-nav li{
