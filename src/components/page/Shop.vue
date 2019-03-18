@@ -8,12 +8,13 @@
     <el-col :span="22"  class="shop-list" >
       <el-table :data="tableDataComputed"  style="width: 100%" height="500px">
         <el-table-column type="index" align="center" width="50"></el-table-column>
-        <el-table-column prop="shopName" label="店铺名称" align="center" width="80"></el-table-column>
+        <el-table-column prop="shopName" label="店铺名称" align="center" min-width="100"></el-table-column>
         <el-table-column prop="mjBuss" label="主营" align="center" width="200"></el-table-column>
         <el-table-column prop="shopAdress" label="店铺地址"  min-width="480"></el-table-column>
-        <el-table-column label="操作" width="60" align="center" >
+        <el-table-column label="操作" width="150" align="center" >
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="delShop(scope.row)">删除</el-button>
+            <el-button type="warning" size="mini" @click="editShop(scope.$index,scope.row)">编辑</el-button>
+            <el-button type="danger" size="mini" @click="delShop(scope.$index,scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -21,18 +22,21 @@
 
     <el-dialog :title="shopTitle" :visible.sync="shopDialogVisible">
       <el-form :model="shopForm" ref="shopForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="店铺名称" prop="shopName">
+        <el-form-item label="店铺名称" prop="shopName"
+                      :rules="{required: true, message: '店铺名称不能为空', trigger: 'blur'}">
           <el-input v-model.trim="shopForm.shopName" clearable></el-input>
         </el-form-item>
-        <el-form-item label="主营" prop="mjBuss">
+        <el-form-item label="主营" prop="mjBuss"
+                      :rules="{required: true, message: '主营不能为空', trigger: 'blur'}">
           <el-input v-model.trim="shopForm.mjBuss" clearable></el-input>
         </el-form-item>
-        <el-form-item label="店铺地址" prop="shopAdress">
+        <el-form-item label="店铺地址" prop="shopAdress"
+                      :rules="{required: true, message: '店铺地址不能为空', trigger: 'blur'}">
           <el-input v-model.trim="shopForm.shopAdress" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-          <el-button @click="resetForm('ruleForm')">重置</el-button>
+          <el-button type="primary" @click="submitForm('shopForm')">保存</el-button>
+          <el-button @click="shopDialogVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -52,7 +56,8 @@
         searchWord:'',
         shopTitle:'',
         shopDialogVisible:false,
-        shopForm:{}
+        shopForm:{},
+        edit:false
       }
     },
     methods:{
@@ -64,12 +69,48 @@
         }
       },
       addShop(){
+        this.edit=false;
         this.shopTitle = '新增店铺';
         this.shopDialogVisible = true;
 
       },
-      delShop(row){
+      editShop(index,row){
+        this.shopDialogVisible = true;
+        this.edit=true;
+        debugger
+        this.shopTitle = '编辑店铺';
+        this.shopForm={
+          shopId:row.shopId,
+          shopName:row.shopName,
+          mjBuss:row.mjBuss,
+          shopAdress:row.shopAdress,
+          index:index
+        };
+      },
+      delShop(index,row){
+        this.tableDataComputed.splice(index,1);
+      },
+      submitForm(formName){
+        let _this = this;
+        _this.$refs[formName].validate((valid) => {
+          if (valid) {
+            if (_this.edit){
+              debugger
+              _this.tableDataComputed.splice(_this.shopForm.index,1,_this.shopForm);
+            } else if (!_this.edit) {
+              _this.tableDataComputed.push(_this.shopForm);
+            }
+            _this.$message({
+              message: '保存成功！',
+              type: 'success'
+            })
 
+            _this.shopDialogVisible = false;
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       }
     },
     created:function () {

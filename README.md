@@ -1,6 +1,6 @@
-# pos
+# awesomepos
 
-> A pos project
+> A Vue.js project
 
 ## Build Setup
 
