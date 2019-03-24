@@ -417,7 +417,7 @@
     }
 </script>
 
-<style >
+<style scoped>
 
   .pos {
     font-size: 12px;
@@ -502,24 +502,6 @@
 
   .total-div small:nth-child(2){
     margin-left: 20px;
-  }
-
-  #pos .el-table__body-wrapper::-webkit-scrollbar{
-    width: 6px;
-    height: 6px;
-    background-color: #F5F5F5;
-    opacity:0;
-  }
-
-  /*!*定义滚动条轨道 内阴影+圆角*!*/
-  #pos .el-table__body-wrapper::-webkit-scrollbar-track{
-    opacity:0;
-  }
-
-  /*!*定义滑块 内阴影+圆角*!*/
-  #pos .el-table__body-wrapper::-webkit-scrollbar-thumb{
-    border-radius: 10px;
-    background-color: #1bb5d9;
   }
 
   #pos > div> div > div.el-dialog__header{

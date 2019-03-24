@@ -20,7 +20,7 @@
       </el-table>
     </el-col>
 
-    <el-dialog :title="shopTitle" :visible.sync="shopDialogVisible">
+    <el-dialog :title="shopTitle" :visible.sync="shopDialogVisible" @close="closeShopDialog('shopForm')">
       <el-form :model="shopForm" ref="shopForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="店铺名称" prop="shopName"
                       :rules="{required: true, message: '店铺名称不能为空', trigger: 'blur'}">
@@ -36,11 +36,10 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('shopForm')">保存</el-button>
-          <el-button @click="shopDialogVisible = false">取消</el-button>
+          <el-button @click="closeShopDialog('shopForm')">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
-
   </div>
 </template>
 
@@ -69,15 +68,25 @@
         }
       },
       addShop(){
+        this.shopDialogVisible = true;
+        this.shopForm={
+          shopId:'',
+          shopName:'',
+          mjBuss:'',
+          shopAdress:''
+        };
         this.edit=false;
         this.shopTitle = '新增店铺';
-        this.shopDialogVisible = true;
 
       },
+      closeShopDialog(formName){
+        this.$refs[formName].resetFields();
+        this.shopDialogVisible = false;
+      },
       editShop(index,row){
+        this.shopForm={};
         this.shopDialogVisible = true;
         this.edit=true;
-        debugger
         this.shopTitle = '编辑店铺';
         this.shopForm={
           shopId:row.shopId,
@@ -94,16 +103,16 @@
         let _this = this;
         _this.$refs[formName].validate((valid) => {
           if (valid) {
+            let tempForm = Object.assign({},_this.shopForm);
             if (_this.edit){
-              debugger
-              _this.tableDataComputed.splice(_this.shopForm.index,1,_this.shopForm);
+              _this.tableDataComputed.splice(tempForm.index,1,tempForm);
             } else if (!_this.edit) {
-              _this.tableDataComputed.push(_this.shopForm);
+              _this.tableDataComputed.push(tempForm);
             }
             _this.$message({
               message: '保存成功！',
               type: 'success'
-            })
+            });
 
             _this.shopDialogVisible = false;
           } else {
