@@ -1,6 +1,7 @@
-# awesomepos
+# pos
 
-> A Vue.js project
+> Tech: Vue+Webpack+Element+Axios+vueRouter
+> modules: pos+shop+goods+vip(todo)+setup(todo)
 
 ## Build Setup
 
